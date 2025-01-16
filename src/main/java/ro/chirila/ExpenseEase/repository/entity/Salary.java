@@ -4,7 +4,6 @@ package ro.chirila.ExpenseEase.repository.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.YearMonth;
 import java.util.List;
 
 @Entity
@@ -31,5 +30,8 @@ public class Salary {
 
     @OneToMany(mappedBy = "salary", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
+
+    @OneToOne(mappedBy = "salary", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PiggyBank piggyBankAmount;
 
 }
