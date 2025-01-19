@@ -9,5 +9,5 @@ public interface SendEmailService {
 
     void sendPasswordEmail(String password, UserResponseDTO userResponseDTO);
     void sendSecurityCodeEmail(String email, String securityCode, String username);
-    void sendPasswordResetEmail(String email, String password, String username);
+    void sendPasswordResetEmail(String email, String username, String password);
 }

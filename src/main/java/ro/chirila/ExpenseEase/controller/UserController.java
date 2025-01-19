@@ -9,7 +9,6 @@ import ro.chirila.ExpenseEase.repository.dto.ChangePasswordDTO;
 import ro.chirila.ExpenseEase.repository.dto.UserRequestDTO;
 import ro.chirila.ExpenseEase.repository.dto.UserResponseDTO;
 import ro.chirila.ExpenseEase.repository.dto.UserSecurityDTO;
-import ro.chirila.ExpenseEase.repository.entity.Role;
 import ro.chirila.ExpenseEase.service.SendEmailService;
 import ro.chirila.ExpenseEase.service.UserService;
 
@@ -62,7 +61,7 @@ public class UserController {
     }
 
     @Transactional
-    @PutMapping("/changePasswordSecurityCode")
+    @PutMapping("/forgotPassword")
     public ResponseEntity<Boolean> changePasswordSecurityCode(@RequestParam("username") String username) {
         String securityCode = userService.changePasswordSecurityCode(username);
         String email = userService.getEmailByUsername(username);
@@ -76,7 +75,13 @@ public class UserController {
                                                    @RequestBody String securityCode) {
         String newPassword = userService.requestNewPassword(username, securityCode);
         String email = userService.getEmailByUsername(username);
-        CompletableFuture.runAsync(() -> sendEmailService.sendPasswordResetEmail(email,username,newPassword));
+        CompletableFuture.runAsync(() -> sendEmailService.sendPasswordResetEmail(email, username, newPassword));
         return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @Transactional
+    @PostMapping("/modifyUserActivity")
+    public ResponseEntity<Boolean> modifyUserActivity(@RequestParam(name = "id") Long id) {
+        return new ResponseEntity<>(userService.modifyUserActivity(id), HttpStatus.OK);
     }
 }

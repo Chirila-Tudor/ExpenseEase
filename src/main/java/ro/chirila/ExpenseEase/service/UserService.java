@@ -19,6 +19,7 @@ public interface UserService {
     String changePasswordSecurityCode(String username);
     String getEmailByUsername(String username);
     String requestNewPassword(String username, String securityCode);
+    Boolean modifyUserActivity(Long userId);
 
 
 }

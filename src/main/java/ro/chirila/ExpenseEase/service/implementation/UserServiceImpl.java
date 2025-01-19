@@ -145,5 +145,14 @@ public class UserServiceImpl implements UserService {
         return password;
     }
 
+    @Override
+    public Boolean modifyUserActivity(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found!"));
+        user.setIsActive(!user.getIsActive());
+        userRepository.save(user);
+        return user.getIsActive();
+    }
+
 
 }

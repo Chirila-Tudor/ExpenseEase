@@ -11,7 +11,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import ro.chirila.ExpenseEase.repository.dto.UserResponseDTO;
-import ro.chirila.ExpenseEase.repository.entity.User;
 import ro.chirila.ExpenseEase.service.SendEmailService;
 
 import java.io.IOException;
@@ -44,7 +43,7 @@ public class SendEmailServiceImpl implements SendEmailService {
                     message,
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
-            helper.setFrom(new InternetAddress(adminEmail));
+            helper.setFrom(new InternetAddress("\"Expense Ease\" <" + adminEmail + ">"));
             helper.setTo(userResponseDTO.getEmail());
             helper.setSubject("Welcome to " + companyName);
 
@@ -73,7 +72,7 @@ public class SendEmailServiceImpl implements SendEmailService {
                     message,
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
-            helper.setFrom(new InternetAddress(adminEmail));
+            helper.setFrom(new InternetAddress("\"Expense Ease\" <" + adminEmail + ">"));
             helper.setTo(email);
             helper.setSubject("Password Reset Request");
             Template template  = configuration.getTemplate("send-security-code.html");
@@ -91,14 +90,14 @@ public class SendEmailServiceImpl implements SendEmailService {
     }
 
     @Override
-    public void sendPasswordResetEmail(String email, String password, String username) {
+    public void sendPasswordResetEmail(String email, String username, String password) {
         MimeMessage message = new MimeMessage(getSession());
         try {
             MimeMessageHelper helper = new MimeMessageHelper(
                     message,
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
-            helper.setFrom(new InternetAddress(adminEmail));
+            helper.setFrom(new InternetAddress("\"Expense Ease\" <" + adminEmail + ">"));
             helper.setTo(email);
             helper.setSubject("Password Reset Notification");
             Template template = configuration.getTemplate("send-password.html");
