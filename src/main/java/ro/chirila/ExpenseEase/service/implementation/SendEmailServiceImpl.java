@@ -65,6 +65,56 @@ public class SendEmailServiceImpl implements SendEmailService {
         }
     }
 
+    @Override
+    public void sendSecurityCodeEmail(String email, String securityCode, String username) {
+        MimeMessage message = new MimeMessage(getSession());
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(
+                    message,
+                    MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                    StandardCharsets.UTF_8.name());
+            helper.setFrom(new InternetAddress(adminEmail));
+            helper.setTo(email);
+            helper.setSubject("Password Reset Request");
+            Template template  = configuration.getTemplate("send-security-code.html");
+            Map<String, Object> templateMapper = new HashMap<>();
+            templateMapper.put("username", username);
+            templateMapper.put("adminEmail", adminEmail);
+            templateMapper.put("companyName", companyName);
+            templateMapper.put("securityCode", securityCode);
+            String htmlTemplate = FreeMarkerTemplateUtils.processTemplateIntoString(template, templateMapper);
+            helper.setText(htmlTemplate, true);
+            Transport.send(message);
+        } catch (MessagingException | IOException | TemplateException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void sendPasswordResetEmail(String email, String password, String username) {
+        MimeMessage message = new MimeMessage(getSession());
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(
+                    message,
+                    MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                    StandardCharsets.UTF_8.name());
+            helper.setFrom(new InternetAddress(adminEmail));
+            helper.setTo(email);
+            helper.setSubject("Password Reset Notification");
+            Template template = configuration.getTemplate("send-password.html");
+            Map<String, Object> templateMapper = new HashMap<>();
+            templateMapper.put("username", username);
+            templateMapper.put("password", password);
+            templateMapper.put("adminEmail", adminEmail);
+            templateMapper.put("companyName", companyName);
+            String htmlTemplate = FreeMarkerTemplateUtils.processTemplateIntoString(template, templateMapper);
+            helper.setText(htmlTemplate, true);
+            Transport.send(message);
+        } catch (MessagingException | IOException | TemplateException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private Properties getProperties() {
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", "true");

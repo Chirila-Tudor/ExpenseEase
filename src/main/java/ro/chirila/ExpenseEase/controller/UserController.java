@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ro.chirila.ExpenseEase.exception.UserAlreadyExistsException;
+import ro.chirila.ExpenseEase.repository.dto.ChangePasswordDTO;
 import ro.chirila.ExpenseEase.repository.dto.UserRequestDTO;
 import ro.chirila.ExpenseEase.repository.dto.UserResponseDTO;
 import ro.chirila.ExpenseEase.repository.dto.UserSecurityDTO;
@@ -48,5 +49,34 @@ public class UserController {
     @PostMapping("/login")
     public UserSecurityDTO login(@RequestParam(name = "username") String username, @RequestBody String hashPassword) {
         return userService.loginUser(username, hashPassword);
+    }
+
+    @Transactional
+    @PostMapping("/changePassword")
+    public ResponseEntity<Object> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+        boolean passwordChanged = userService.changePassword(changePasswordDTO);
+        if (passwordChanged) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @Transactional
+    @PutMapping("/changePasswordSecurityCode")
+    public ResponseEntity<Boolean> changePasswordSecurityCode(@RequestParam("username") String username) {
+        String securityCode = userService.changePasswordSecurityCode(username);
+        String email = userService.getEmailByUsername(username);
+        CompletableFuture.runAsync(() -> sendEmailService.sendSecurityCodeEmail(email,securityCode,username));
+        return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @Transactional
+    @PostMapping("/requestPassword")
+    public ResponseEntity<Boolean> requestPassword(@RequestParam("username") String username,
+                                                   @RequestBody String securityCode) {
+        String newPassword = userService.requestNewPassword(username, securityCode);
+        String email = userService.getEmailByUsername(username);
+        CompletableFuture.runAsync(() -> sendEmailService.sendPasswordResetEmail(email,username,newPassword));
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }
