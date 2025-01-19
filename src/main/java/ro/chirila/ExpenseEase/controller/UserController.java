@@ -65,7 +65,7 @@ public class UserController {
     public ResponseEntity<Boolean> changePasswordSecurityCode(@RequestParam("username") String username) {
         String securityCode = userService.changePasswordSecurityCode(username);
         String email = userService.getEmailByUsername(username);
-        CompletableFuture.runAsync(() -> sendEmailService.sendSecurityCodeEmail(email,securityCode,username));
+//        CompletableFuture.runAsync(() -> sendEmailService.sendSecurityCodeEmail(email,securityCode,username));
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 

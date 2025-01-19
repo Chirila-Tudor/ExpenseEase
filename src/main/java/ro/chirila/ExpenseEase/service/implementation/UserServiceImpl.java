@@ -2,7 +2,6 @@ package ro.chirila.ExpenseEase.service.implementation;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ro.chirila.ExpenseEase.exception.UserAlreadyDeactivatedException;
 import ro.chirila.ExpenseEase.exception.UserAlreadyExistsException;
@@ -119,8 +118,12 @@ public class UserServiceImpl implements UserService {
             User user = optionalUser.get();
             int length = 10;
             String securityCode = generateSecurityCode(length);
-            user.setSecurityCode(securityCode);
+            String hashedSecurityCode = PasswordGenerator.hashSecurityCode(securityCode);
+            user.setSecurityCode(hashedSecurityCode);
             userRepository.save(user);
+
+            CompletableFuture.runAsync(() -> sendEmailService.sendSecurityCodeEmail(user.getEmail(),securityCode,username));
+
             return securityCode;
         }
         throw new BadCredentialsException("Wrong security code");
@@ -135,7 +138,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public String requestNewPassword(String username, String securityCode) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found!"));
-        if (!user.getSecurityCode().equals(securityCode)) {
+        String hashedSecurityCode = PasswordGenerator.hashSecurityCode(securityCode);
+
+        if (!user.getSecurityCode().equals(hashedSecurityCode)) {
             throw new BadCredentialsException("Invalid security code");
         }
         String password = generatePassword(12);
