@@ -102,12 +102,16 @@ public class UserServiceImpl implements UserService {
         String username = changePasswordDTO.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found!"));
 
-        if(!changePasswordDTO.getOldPassword().equals(user.getPassword())){
+        String hashedOldPassword = PasswordGenerator.hashPassword(changePasswordDTO.getOldPassword());
+        if (!hashedOldPassword.equals(user.getPassword())) {
             return false;
         }
-        user.setPassword(changePasswordDTO.getNewPassword());
+
+        String hashedNewPassword = PasswordGenerator.hashPassword(changePasswordDTO.getNewPassword());
+        user.setPassword(hashedNewPassword);
         user.setIsFirstLogin(false);
         userRepository.save(user);
+
         return true;
     }
 

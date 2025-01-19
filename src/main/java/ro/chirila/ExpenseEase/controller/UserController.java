@@ -65,7 +65,6 @@ public class UserController {
     public ResponseEntity<Boolean> changePasswordSecurityCode(@RequestParam("username") String username) {
         String securityCode = userService.changePasswordSecurityCode(username);
         String email = userService.getEmailByUsername(username);
-//        CompletableFuture.runAsync(() -> sendEmailService.sendSecurityCodeEmail(email,securityCode,username));
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
@@ -83,5 +82,17 @@ public class UserController {
     @PostMapping("/modifyUserActivity")
     public ResponseEntity<Boolean> modifyUserActivity(@RequestParam(name = "id") Long id) {
         return new ResponseEntity<>(userService.modifyUserActivity(id), HttpStatus.OK);
+    }
+
+    @Transactional
+    @GetMapping
+    public UserResponseDTO getUserByUsername(@RequestParam(name = "username") String username) {
+        return userService.getUserByUsername(username);
+    }
+
+    @Transactional
+    @DeleteMapping
+    public ResponseEntity<Boolean> deleteUser(@RequestBody String username) {
+        return new ResponseEntity<>(userService.deleteUserByUsername(username), HttpStatus.OK);
     }
 }

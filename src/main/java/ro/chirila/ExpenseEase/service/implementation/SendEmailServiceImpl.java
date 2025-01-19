@@ -33,7 +33,7 @@ public class SendEmailServiceImpl implements SendEmailService {
 
     @Value("${spring.mail.password}")
     private String password;
-    private String companyName = "Expense Ease";
+    private String companyName = "Ease Expense";
 
     @Override
     public void sendPasswordEmail(String password, UserResponseDTO userResponseDTO) {
@@ -43,7 +43,7 @@ public class SendEmailServiceImpl implements SendEmailService {
                     message,
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
-            helper.setFrom(new InternetAddress("\"Expense Ease\" <" + adminEmail + ">"));
+            helper.setFrom(new InternetAddress("\"Ease Expense\" <" + adminEmail + ">"));
             helper.setTo(userResponseDTO.getEmail());
             helper.setSubject("Welcome to " + companyName);
 
@@ -72,7 +72,7 @@ public class SendEmailServiceImpl implements SendEmailService {
                     message,
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
-            helper.setFrom(new InternetAddress("\"Expense Ease\" <" + adminEmail + ">"));
+            helper.setFrom(new InternetAddress("\"Ease Expense\" <" + adminEmail + ">"));
             helper.setTo(email);
             helper.setSubject("Password Reset Request");
             Template template  = configuration.getTemplate("send-security-code.html");
@@ -97,7 +97,7 @@ public class SendEmailServiceImpl implements SendEmailService {
                     message,
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
-            helper.setFrom(new InternetAddress("\"Expense Ease\" <" + adminEmail + ">"));
+            helper.setFrom(new InternetAddress("\"Ease Expense\" <" + adminEmail + ">"));
             helper.setTo(email);
             helper.setSubject("Password Reset Notification");
             Template template = configuration.getTemplate("send-password.html");
