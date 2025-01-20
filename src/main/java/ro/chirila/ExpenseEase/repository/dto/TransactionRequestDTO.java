@@ -8,5 +8,5 @@ public class TransactionRequestDTO {
     private Double amount;
     private String date;
     private Long userId;
-    private Double salary;
+    private Long salaryId;
 }

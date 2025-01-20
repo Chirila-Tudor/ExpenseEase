@@ -8,4 +8,5 @@ public class ExpenseRequestDTO {
     private Double amount;
     private String date;
     private Long userId;
+    private Long salaryId;
 }

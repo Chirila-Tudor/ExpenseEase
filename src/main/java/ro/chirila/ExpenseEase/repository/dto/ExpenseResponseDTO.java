@@ -9,4 +9,5 @@ public class ExpenseResponseDTO {
     private Double amount;
     private String date;
     private String userId;
+    private String salaryId;
 }

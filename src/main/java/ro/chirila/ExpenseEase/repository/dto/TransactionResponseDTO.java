@@ -9,5 +9,5 @@ public class TransactionResponseDTO {
     private Double amount;
     private String date;
     private String userId;
-    private Double salary;
+    private String salaryId;
 }

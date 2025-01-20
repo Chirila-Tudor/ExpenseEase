@@ -59,13 +59,13 @@ public class User {
     private List<Expense> expenses;
 
     @JsonIgnoreProperties("user")
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Salary> salaries;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Salary salary;
 
     @JsonIgnoreProperties("user")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<PiggyBank> savings;
 }
