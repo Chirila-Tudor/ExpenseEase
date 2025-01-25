@@ -49,14 +49,11 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setUser(user);
         transaction.setSalary(salary);
 
-        // Update the remaining salary after adding the transaction
         salary.setRemainingSalary(salary.getRemainingSalary() - transactionRequestDTO.getAmount());
 
-        // Save both the transaction and the updated salary
         transactionRepository.save(transaction);
         salaryRepository.save(salary);
 
-        // Map the saved transaction to the response DTO
         TransactionResponseDTO responseDTO = new TransactionResponseDTO();
         responseDTO.setId(transaction.getId());
         responseDTO.setDescription(transaction.getDescription());
