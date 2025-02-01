@@ -3,9 +3,8 @@ package ro.chirila.ExpenseEase.repository.dto;
 import lombok.Data;
 
 @Data
-public class ExpenseResponseDTO {
+public class PiggyBankResponseDTO {
     private Long id;
-    private String category;
     private Double amount;
     private String date;
     private String userId;

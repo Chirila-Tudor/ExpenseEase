@@ -24,14 +24,17 @@ public class Salary {
     @Column(nullable = false)
     private Double remainingSalary;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "salary", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
 
-    @OneToOne(mappedBy = "salary", cascade = CascadeType.ALL, orphanRemoval = true)
-    private PiggyBank piggyBankAmount;
+    @OneToMany(mappedBy = "salary", cascade = CascadeType.ALL)
+    private List<Expense> expenses;
+
+    @OneToMany(mappedBy = "salary", cascade = CascadeType.ALL)
+    private List<PiggyBank> piggyBankAmount;
 
 }

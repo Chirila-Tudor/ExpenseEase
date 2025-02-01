@@ -16,7 +16,10 @@ public class PiggyBank {
     @Column(nullable = false)
     private Double amount;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @Column(nullable = false)
+    private String date;
+
+    @ManyToOne
     @JoinColumn(name = "salary_id", nullable = false)
     private Salary salary;
 
