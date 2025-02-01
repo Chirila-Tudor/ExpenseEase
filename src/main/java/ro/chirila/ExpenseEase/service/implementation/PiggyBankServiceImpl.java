@@ -34,10 +34,6 @@ public class PiggyBankServiceImpl implements PiggyBankService {
     @Override
     public PiggyBankResponseDTO addMoneyIntoPiggyBank(PiggyBankRequestDTO piggyBankRequestDTO) {
 
-        PiggyBank piggyBank = new PiggyBank();
-        piggyBank.setAmount(piggyBankRequestDTO.getAmount());
-        piggyBank.setDate(piggyBankRequestDTO.getDate());
-
         User user = userRepository.findById(piggyBankRequestDTO.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + piggyBankRequestDTO.getUserId()));
 
@@ -46,6 +42,13 @@ public class PiggyBankServiceImpl implements PiggyBankService {
             throw new IllegalStateException("Salary not found for User ID: " + piggyBankRequestDTO.getUserId());
         }
 
+        if (salary.getRemainingSalary() < piggyBankRequestDTO.getAmount()) {
+            throw new IllegalArgumentException("Insufficient remaining salary!");
+        }
+
+        PiggyBank piggyBank = new PiggyBank();
+        piggyBank.setAmount(piggyBankRequestDTO.getAmount());
+        piggyBank.setDate(piggyBankRequestDTO.getDate());
         piggyBank.setUser(user);
         piggyBank.setSalary(salary);
 
@@ -54,41 +57,34 @@ public class PiggyBankServiceImpl implements PiggyBankService {
         piggyBankRepository.save(piggyBank);
         salaryRepository.save(salary);
 
-        PiggyBankResponseDTO responseDTO = new PiggyBankResponseDTO();
-        responseDTO.setId(piggyBank.getId());
-        responseDTO.setAmount(piggyBank.getAmount());
-        responseDTO.setDate(piggyBank.getDate());
-        responseDTO.setUserId(piggyBank.getUser().getId().toString());
-        responseDTO.setSalaryId(piggyBank.getSalary().getId().toString());
-
-        return responseDTO;
+        return modelMapper.map(piggyBank, PiggyBankResponseDTO.class);
     }
 
     @Override
     public PiggyBankResponseDTO updatePiggyBankAmount(Long id, PiggyBankUpdateRequestDTO piggyBankUpdateRequestDTO) {
         PiggyBank piggyBank = piggyBankRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Transaction not found with ID: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Piggy Bank not found with ID: " + id));
 
         Salary salary = piggyBank.getSalary();
         if (salary == null) {
-            throw new IllegalStateException("Salary not associated with Transaction ID: " + id);
+            throw new IllegalStateException("Salary not associated with Piggy Bank ID: " + id);
         }
 
         double oldAmount = piggyBank.getAmount();
         double newAmount = piggyBankUpdateRequestDTO.getAmount();
-        double adjustment = oldAmount - newAmount;
+        double adjustment = newAmount - oldAmount;
 
-        if (salary.getRemainingSalary() + adjustment < 0) {
+        if (salary.getRemainingSalary() - adjustment < 0) {
             throw new IllegalArgumentException("Insufficient remaining salary!");
         }
 
-        salary.setRemainingSalary(salary.getRemainingSalary() + adjustment);
-
+        salary.setRemainingSalary(salary.getRemainingSalary() - adjustment);
         piggyBank.setAmount(newAmount);
 
-        PiggyBank updatedPiggyBank = piggyBankRepository.save(piggyBank);
+        piggyBankRepository.save(piggyBank);
+        salaryRepository.save(salary);
 
-        return modelMapper.map(updatedPiggyBank, PiggyBankResponseDTO.class);
+        return modelMapper.map(piggyBank, PiggyBankResponseDTO.class);
     }
 
     @Override
@@ -99,6 +95,7 @@ public class PiggyBankServiceImpl implements PiggyBankService {
         Salary salary = piggyBank.getSalary();
         if (salary != null) {
             salary.setRemainingSalary(salary.getRemainingSalary() + piggyBank.getAmount());
+            salaryRepository.save(salary);
         }
 
         piggyBankRepository.delete(piggyBank);

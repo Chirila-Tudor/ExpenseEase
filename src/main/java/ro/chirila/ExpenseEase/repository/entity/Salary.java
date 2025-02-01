@@ -34,7 +34,7 @@ public class Salary {
     @OneToMany(mappedBy = "salary", cascade = CascadeType.ALL)
     private List<Expense> expenses;
 
-    @OneToOne(mappedBy = "salary", cascade = CascadeType.ALL)
-    private PiggyBank piggyBankAmount;
+    @OneToMany(mappedBy = "salary", cascade = CascadeType.ALL)
+    private List<PiggyBank> piggyBankAmount;
 
 }

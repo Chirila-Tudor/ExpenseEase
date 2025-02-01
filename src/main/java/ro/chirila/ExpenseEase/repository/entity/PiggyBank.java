@@ -19,7 +19,7 @@ public class PiggyBank {
     @Column(nullable = false)
     private String date;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "salary_id", nullable = false)
     private Salary salary;
 
