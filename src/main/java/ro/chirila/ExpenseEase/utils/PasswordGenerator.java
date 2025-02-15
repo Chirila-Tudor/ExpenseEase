@@ -76,5 +76,8 @@ public class PasswordGenerator {
             return null;
         }
     }
+    public static boolean verifyPassword(String plainText, String hashedPassword) {
+        return hashPassword(plainText).equals(hashedPassword);
+    }
 
 }

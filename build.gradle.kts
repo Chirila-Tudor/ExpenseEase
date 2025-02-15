@@ -28,7 +28,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation:3.2.0")
 	implementation("org.springframework.boot:spring-boot-starter-mail")
 	implementation("org.freemarker:freemarker:2.3.32")
-	//implementation ("org.postgresql:postgresql:42.2.10")
+	implementation ("org.postgresql:postgresql:42.2.10")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.projectlombok:lombok")

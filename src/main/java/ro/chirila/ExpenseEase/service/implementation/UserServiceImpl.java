@@ -80,19 +80,18 @@ public class UserServiceImpl implements UserService {
 
     }
 
+
     @Override
     public UserSecurityDTO loginUser(String username, String password) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            String hashedPassword = PasswordGenerator.hashPassword(password);
-            if (user.getIsActive() && hashedPassword.equals(user.getPassword())) {
+            if (user.getIsActive() && PasswordGenerator.verifyPassword(password, user.getPassword())) {
                 return modelMapper.map(user, UserSecurityDTO.class);
             }
-            if (!user.getIsActive() && hashedPassword.equals(user.getPassword())) {
+            if (!user.getIsActive() && PasswordGenerator.verifyPassword(password, user.getPassword())) {
                 throw new UserAlreadyDeactivatedException("User was deactivated");
             }
-
         }
         throw new BadCredentialsException("Bad credentials.");
     }
@@ -141,17 +140,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String requestNewPassword(String username, String securityCode) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found!"));
-        String hashedSecurityCode = PasswordGenerator.hashSecurityCode(securityCode);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found!"));
 
+        String hashedSecurityCode = PasswordGenerator.hashSecurityCode(securityCode);
         if (!user.getSecurityCode().equals(hashedSecurityCode)) {
             throw new BadCredentialsException("Invalid security code");
         }
-        String password = generatePassword(12);
+
+        String plainTextPassword = generatePassword(12);
         user.setIsFirstLogin(true);
-        user.setPassword(hashPassword(password));
+        user.setPassword(PasswordGenerator.hashPassword(plainTextPassword));
         userRepository.save(user);
-        return password;
+        return plainTextPassword;
     }
 
     @Override
