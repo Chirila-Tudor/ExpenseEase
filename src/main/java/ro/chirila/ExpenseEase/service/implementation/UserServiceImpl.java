@@ -163,5 +163,12 @@ public class UserServiceImpl implements UserService {
         return user.getIsActive();
     }
 
+    @Override
+    public Boolean isFirstLogin(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found!"));
+        return user.getIsFirstLogin();
+    }
+
 
 }

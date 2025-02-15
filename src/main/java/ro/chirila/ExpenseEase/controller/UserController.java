@@ -51,6 +51,12 @@ public class UserController {
     }
 
     @Transactional
+    @GetMapping("/isFirstLogin")
+    public ResponseEntity<Boolean> isFirstLogin(@RequestParam(name = "username") String username) {
+        return new ResponseEntity<>(userService.isFirstLogin(username), HttpStatus.OK);
+    }
+
+    @Transactional
     @PostMapping("/changePassword")
     public ResponseEntity<Object> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
         boolean passwordChanged = userService.changePassword(changePasswordDTO);

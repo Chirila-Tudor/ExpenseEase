@@ -20,6 +20,7 @@ public interface UserService {
     String getEmailByUsername(String username);
     String requestNewPassword(String username, String securityCode);
     Boolean modifyUserActivity(Long userId);
+    Boolean isFirstLogin(String username);
 
 
 }
