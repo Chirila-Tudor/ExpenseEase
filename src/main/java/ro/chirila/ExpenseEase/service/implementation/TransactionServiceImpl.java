@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ro.chirila.ExpenseEase.repository.SalaryRepository;
 import ro.chirila.ExpenseEase.repository.TransactionRepository;
 import ro.chirila.ExpenseEase.repository.UserRepository;
+import ro.chirila.ExpenseEase.repository.dto.SalaryResponseDTO;
 import ro.chirila.ExpenseEase.repository.dto.TransactionRequestDTO;
 import ro.chirila.ExpenseEase.repository.dto.TransactionResponseDTO;
 import ro.chirila.ExpenseEase.repository.entity.Salary;
@@ -13,6 +14,7 @@ import ro.chirila.ExpenseEase.repository.entity.User;
 import ro.chirila.ExpenseEase.service.TransactionService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +46,10 @@ public class TransactionServiceImpl implements TransactionService {
         Salary salary = user.getSalary();
         if (salary == null) {
             throw new IllegalStateException("Salary not found for User ID: " + transactionRequestDTO.getUserId());
+        }
+
+        if (transactionRequestDTO.getAmount() > salary.getRemainingSalary()) {
+            throw new IllegalArgumentException("Transaction amount exceeds the remaining salary.");
         }
 
         transaction.setUser(user);
@@ -112,6 +118,18 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.findAll().stream()
                 .map(transactions -> modelMapper.map(transactions, TransactionResponseDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public TransactionResponseDTO getTransactionById(Long transactionId) {
+        Optional<Transaction> transactionOptional = transactionRepository.findById(transactionId);
+
+        if (transactionOptional.isEmpty()) {
+            throw new IllegalArgumentException("Salary not found with ID: " + transactionId);
+        }
+
+        Transaction transaction = transactionOptional.get();
+        return modelMapper.map(transaction, TransactionResponseDTO.class);
     }
 
 }

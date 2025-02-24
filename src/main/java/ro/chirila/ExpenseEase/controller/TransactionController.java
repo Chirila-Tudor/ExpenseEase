@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ro.chirila.ExpenseEase.repository.dto.SalaryResponseDTO;
 import ro.chirila.ExpenseEase.repository.dto.TransactionRequestDTO;
 import ro.chirila.ExpenseEase.repository.dto.TransactionResponseDTO;
 import ro.chirila.ExpenseEase.service.TransactionService;
@@ -40,5 +41,9 @@ public class TransactionController {
     @GetMapping("/getAllTransactions")
     public ResponseEntity<List<TransactionResponseDTO>> getAllTransactions() {
         return new ResponseEntity<>(transactionService.getAllTransactions(), HttpStatus.OK);
+    }
+    @GetMapping("/getTransaction")
+    public TransactionResponseDTO getTransactionById(@RequestParam Long transactionId) {
+        return transactionService.getTransactionById(transactionId);
     }
 }

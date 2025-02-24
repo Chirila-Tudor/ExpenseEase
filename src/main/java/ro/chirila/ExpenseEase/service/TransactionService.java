@@ -1,6 +1,7 @@
 package ro.chirila.ExpenseEase.service;
 
 import org.springframework.stereotype.Service;
+import ro.chirila.ExpenseEase.repository.dto.SalaryResponseDTO;
 import ro.chirila.ExpenseEase.repository.dto.TransactionRequestDTO;
 import ro.chirila.ExpenseEase.repository.dto.TransactionResponseDTO;
 
@@ -13,4 +14,5 @@ public interface TransactionService {
     TransactionResponseDTO updateTransaction(Long id, TransactionRequestDTO transactionRequestDTO);
     void deleteTransaction(Long id);
     List<TransactionResponseDTO> getAllTransactions();
+    TransactionResponseDTO getTransactionById(Long transactionId);
 }
