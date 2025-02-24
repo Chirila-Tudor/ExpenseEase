@@ -7,11 +7,14 @@ import ro.chirila.ExpenseEase.repository.UserRepository;
 import ro.chirila.ExpenseEase.repository.dto.SalaryRequestDTO;
 import ro.chirila.ExpenseEase.repository.dto.SalaryResponseDTO;
 import ro.chirila.ExpenseEase.repository.dto.SalaryUpdateRequestDTO;
+import ro.chirila.ExpenseEase.repository.dto.TransactionResponseDTO;
 import ro.chirila.ExpenseEase.repository.entity.Salary;
 import ro.chirila.ExpenseEase.repository.entity.User;
 import ro.chirila.ExpenseEase.service.SalaryService;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SalaryServiceImpl implements SalaryService {
@@ -55,7 +58,6 @@ public class SalaryServiceImpl implements SalaryService {
 
         User user = userOptional.get();
 
-        // Find the existing salary by ID and make sure it's linked to the correct user
         Optional<Salary> salaryOptional = salaryRepository.findById(salaryId);
         if (salaryOptional.isEmpty()) {
             throw new IllegalArgumentException("Salary not found with ID: " + salaryId);
@@ -93,8 +95,26 @@ public class SalaryServiceImpl implements SalaryService {
             user.setSalary(null);
             userRepository.save(user);
         }
-
         salaryRepository.delete(salary);
+    }
+
+    @Override
+    public List<SalaryResponseDTO> getAllSalaries() {
+        return salaryRepository.findAll().stream()
+                .map(salaries -> modelMapper.map(salaries, SalaryResponseDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public SalaryResponseDTO getSalaryById(Long salaryId) {
+        Optional<Salary> salaryOptional = salaryRepository.findById(salaryId);
+
+        if (salaryOptional.isEmpty()) {
+            throw new IllegalArgumentException("Salary not found with ID: " + salaryId);
+        }
+
+        Salary salary = salaryOptional.get();
+        return modelMapper.map(salary, SalaryResponseDTO.class);
     }
 
 

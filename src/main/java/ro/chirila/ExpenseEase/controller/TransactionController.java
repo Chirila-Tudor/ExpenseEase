@@ -38,7 +38,7 @@ public class TransactionController {
         return ResponseEntity.noContent().build();
     }
     @GetMapping("/getAllTransactions")
-    public ResponseEntity<List<TransactionResponseDTO>> getAllExpenses() {
+    public ResponseEntity<List<TransactionResponseDTO>> getAllTransactions() {
         return new ResponseEntity<>(transactionService.getAllTransactions(), HttpStatus.OK);
     }
 }

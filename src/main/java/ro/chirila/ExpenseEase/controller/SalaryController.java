@@ -7,7 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import ro.chirila.ExpenseEase.repository.dto.SalaryRequestDTO;
 import ro.chirila.ExpenseEase.repository.dto.SalaryResponseDTO;
 import ro.chirila.ExpenseEase.repository.dto.SalaryUpdateRequestDTO;
+import ro.chirila.ExpenseEase.repository.dto.TransactionResponseDTO;
 import ro.chirila.ExpenseEase.service.SalaryService;
+
+import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -38,5 +41,15 @@ public class SalaryController {
     public ResponseEntity<Void> deleteExpense(@RequestParam Long id) {
         salaryService.deleteSalary(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/getAllSalaries")
+    public ResponseEntity<List<SalaryResponseDTO>> getAllSalaries() {
+        return new ResponseEntity<>(salaryService.getAllSalaries(), HttpStatus.OK);
+    }
+
+    @GetMapping("/getSalary")
+    public SalaryResponseDTO getSalaryById(@RequestParam Long salaryId) {
+        return salaryService.getSalaryById(salaryId);
     }
 }

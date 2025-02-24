@@ -7,4 +7,5 @@ public class UserSecurityDTO {
     private String username;
     private String role;
     private Boolean isFirstLogin;
+    private Long userId;
 }
