@@ -12,8 +12,9 @@ public interface ExpenseService {
 
     ExpenseResponseDTO addExpense(ExpenseRequestDTO expenseRequestDTO);
     List<ExpenseResponseDTO> getAllExpenses();
-    Optional<ExpenseResponseDTO> getExpenseById(Long id);
+    ExpenseResponseDTO getExpenseById(Long id);
     ExpenseResponseDTO updateExpense(Long id, ExpenseRequestDTO expenseRequestDTO);
     void deleteExpense(Long id);
+    double getTotalExpensesAmount();
 
 }

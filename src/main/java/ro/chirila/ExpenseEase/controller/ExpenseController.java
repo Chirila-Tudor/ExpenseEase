@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ro.chirila.ExpenseEase.repository.dto.ExpenseRequestDTO;
 import ro.chirila.ExpenseEase.repository.dto.ExpenseResponseDTO;
+import ro.chirila.ExpenseEase.repository.dto.TransactionResponseDTO;
 import ro.chirila.ExpenseEase.service.ExpenseService;
 
 import java.util.List;
@@ -41,5 +42,14 @@ public class ExpenseController {
     public ResponseEntity<Void> deleteExpense(@RequestParam Long id) {
         expenseService.deleteExpense(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/totalExpenses")
+    public double getTotalExpensesAmount() {
+        return expenseService.getTotalExpensesAmount();
+    }
+
+    @GetMapping("/getExpense")
+    public ExpenseResponseDTO getExpenseById(@RequestParam Long expenseId) {
+        return expenseService.getExpenseById(expenseId);
     }
 }

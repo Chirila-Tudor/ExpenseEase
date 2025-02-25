@@ -132,4 +132,11 @@ public class TransactionServiceImpl implements TransactionService {
         return modelMapper.map(transaction, TransactionResponseDTO.class);
     }
 
+    @Override
+    public double getTotalTransactionAmount() {
+        return transactionRepository.findAll().stream()
+                .mapToDouble(Transaction::getAmount)
+                .sum();
+    }
+
 }

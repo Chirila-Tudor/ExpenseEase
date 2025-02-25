@@ -4,11 +4,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import ro.chirila.ExpenseEase.exception.ExpenseNotFoundException;
 import ro.chirila.ExpenseEase.repository.ExpenseRepository;
+import ro.chirila.ExpenseEase.repository.SalaryRepository;
 import ro.chirila.ExpenseEase.repository.UserRepository;
 import ro.chirila.ExpenseEase.repository.dto.ExpenseRequestDTO;
 import ro.chirila.ExpenseEase.repository.dto.ExpenseResponseDTO;
+import ro.chirila.ExpenseEase.repository.dto.TransactionResponseDTO;
 import ro.chirila.ExpenseEase.repository.entity.Expense;
 import ro.chirila.ExpenseEase.repository.entity.Salary;
+import ro.chirila.ExpenseEase.repository.entity.Transaction;
 import ro.chirila.ExpenseEase.repository.entity.User;
 import ro.chirila.ExpenseEase.service.ExpenseService;
 
@@ -21,11 +24,13 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
+    public final SalaryRepository salaryRepository;
     private final ModelMapper modelMapper;
 
-    public ExpenseServiceImpl(ExpenseRepository expenseRepository, UserRepository userRepository, ModelMapper modelMapper) {
+    public ExpenseServiceImpl(ExpenseRepository expenseRepository, UserRepository userRepository, SalaryRepository salaryRepository, ModelMapper modelMapper) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
+        this.salaryRepository = salaryRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -45,24 +50,25 @@ public class ExpenseServiceImpl implements ExpenseService {
         if (salary == null) {
             throw new IllegalStateException("Salary not found for User ID: " + expenseRequestDTO.getUserId());
         }
-
-        expense.setUser(user);
-        expense.setSalary(salary);
-
         if (salary.getRemainingSalary() < expenseRequestDTO.getAmount()) {
             throw new IllegalArgumentException("Insufficient remaining salary!");
         }
+        expense.setUser(user);
+        expense.setSalary(salary);
+
+
         salary.setRemainingSalary(salary.getRemainingSalary() - expenseRequestDTO.getAmount());
 
-        Expense savedExpense = expenseRepository.save(expense);
+        expenseRepository.save(expense);
+        salaryRepository.save(salary);
 
         ExpenseResponseDTO responseDTO = new ExpenseResponseDTO();
-        responseDTO.setId(savedExpense.getId());
-        responseDTO.setCategory(savedExpense.getCategory());
-        responseDTO.setAmount(savedExpense.getAmount());
-        responseDTO.setDate(savedExpense.getDate());
-        responseDTO.setUserId(savedExpense.getUser().getId().toString());
-        responseDTO.setSalaryId(savedExpense.getSalary().getId().toString());
+        responseDTO.setId(expense.getId());
+        responseDTO.setCategory(expense.getCategory());
+        responseDTO.setAmount(expense.getAmount());
+        responseDTO.setDate(expense.getDate());
+        responseDTO.setUserId(expense.getUser().getId().toString());
+        responseDTO.setSalaryId(expense.getSalary().getId().toString());
 
         return responseDTO;
     }
@@ -75,9 +81,15 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Optional<ExpenseResponseDTO> getExpenseById(Long id) {
-        return expenseRepository.findById(id)
-                .map(expense -> modelMapper.map(expense, ExpenseResponseDTO.class));
+    public ExpenseResponseDTO getExpenseById(Long id) {
+        Optional<Expense> expenseOptional = expenseRepository.findById(id);
+
+        if (expenseOptional.isEmpty()) {
+            throw new IllegalArgumentException("Salary not found with ID: " + id);
+        }
+
+        Expense expense = expenseOptional.get();
+        return modelMapper.map(expense, ExpenseResponseDTO.class);
     }
 
     @Override
@@ -118,6 +130,13 @@ public class ExpenseServiceImpl implements ExpenseService {
         }
 
         expenseRepository.delete(expense);
+    }
+
+    @Override
+    public double getTotalExpensesAmount() {
+        return expenseRepository.findAll().stream()
+                .mapToDouble(Expense::getAmount)
+                .sum();
     }
 
 

@@ -15,4 +15,5 @@ public interface TransactionService {
     void deleteTransaction(Long id);
     List<TransactionResponseDTO> getAllTransactions();
     TransactionResponseDTO getTransactionById(Long transactionId);
+    double getTotalTransactionAmount();
 }
