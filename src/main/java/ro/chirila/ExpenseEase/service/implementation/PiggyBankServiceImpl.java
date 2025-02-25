@@ -9,10 +9,16 @@ import ro.chirila.ExpenseEase.repository.UserRepository;
 import ro.chirila.ExpenseEase.repository.dto.PiggyBankRequestDTO;
 import ro.chirila.ExpenseEase.repository.dto.PiggyBankResponseDTO;
 import ro.chirila.ExpenseEase.repository.dto.PiggyBankUpdateRequestDTO;
+import ro.chirila.ExpenseEase.repository.dto.TransactionResponseDTO;
 import ro.chirila.ExpenseEase.repository.entity.PiggyBank;
 import ro.chirila.ExpenseEase.repository.entity.Salary;
+import ro.chirila.ExpenseEase.repository.entity.Transaction;
 import ro.chirila.ExpenseEase.repository.entity.User;
 import ro.chirila.ExpenseEase.service.PiggyBankService;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PiggyBankServiceImpl implements PiggyBankService {
@@ -99,5 +105,31 @@ public class PiggyBankServiceImpl implements PiggyBankService {
         }
 
         piggyBankRepository.delete(piggyBank);
+    }
+
+    @Override
+    public List<PiggyBankResponseDTO> getAllSavings() {
+        return piggyBankRepository.findAll().stream()
+                .map(savings -> modelMapper.map(savings, PiggyBankResponseDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public PiggyBankResponseDTO getSavingById(Long savingId) {
+        Optional<PiggyBank> savingOptional = piggyBankRepository.findById(savingId);
+
+        if (savingOptional.isEmpty()) {
+            throw new IllegalArgumentException("Salary not found with ID: " + savingId);
+        }
+
+        PiggyBank piggyBank = savingOptional.get();
+        return modelMapper.map(piggyBank, PiggyBankResponseDTO.class);
+    }
+
+    @Override
+    public double getTotalSavingsAmount() {
+        return piggyBankRepository.findAll().stream()
+                .mapToDouble(PiggyBank::getAmount)
+                .sum();
     }
 }

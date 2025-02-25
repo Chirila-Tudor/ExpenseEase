@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ro.chirila.ExpenseEase.repository.dto.*;
 import ro.chirila.ExpenseEase.service.PiggyBankService;
 
+import java.util.List;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/savings")
@@ -36,5 +38,17 @@ public class PiggyBankController {
     public ResponseEntity<Void> deletePiggyBank(@RequestParam Long id) {
         piggyBankService.deleteSaving(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/getAllSavings")
+    public ResponseEntity<List<PiggyBankResponseDTO>> getAllSavings() {
+        return new ResponseEntity<>(piggyBankService.getAllSavings(), HttpStatus.OK);
+    }
+    @GetMapping("/getSaving")
+    public PiggyBankResponseDTO getSavingById(@RequestParam Long savingId) {
+        return piggyBankService.getSavingById(savingId);
+    }
+    @GetMapping("/totalSavings")
+    public double getTotalSavingsAmount() {
+        return piggyBankService.getTotalSavingsAmount();
     }
 }
