@@ -59,8 +59,8 @@ public class User {
     private List<Expense> expenses;
 
     @JsonIgnoreProperties("user")
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Salary salary;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Salary> salaries;
 
     @JsonIgnoreProperties("user")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

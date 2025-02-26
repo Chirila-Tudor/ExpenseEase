@@ -33,21 +33,26 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
     public SalaryResponseDTO addSalary(SalaryRequestDTO salaryRequestDTO) {
-        Optional<User> userOptional = userRepository.findById(salaryRequestDTO.getUserId());
-        if (userOptional.isEmpty()) {
-            throw new IllegalArgumentException("User not found with ID: " + salaryRequestDTO.getUserId());
-        }
+        User user = userRepository.findById(salaryRequestDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + salaryRequestDTO.getUserId()));
 
-        User user = userOptional.get();
-
-        Salary salary = modelMapper.map(salaryRequestDTO, Salary.class);
-        salary.setUser(user);
-        salary.setRemainingSalary(salaryRequestDTO.getTotalSalary());
+        Salary salary = new Salary();
+        salary.setTotalSalary(salaryRequestDTO.getTotalSalary());
+        salary.setRemainingSalary(salaryRequestDTO.getRemainingSalary());
         salary.setDate(salaryRequestDTO.getDate());
 
-        Salary savedSalary = salaryRepository.save(salary);
+        salary.setUser(user);
 
-        return modelMapper.map(savedSalary, SalaryResponseDTO.class);
+        salary = salaryRepository.save(salary);
+
+        SalaryResponseDTO responseDTO = new SalaryResponseDTO();
+        responseDTO.setId(salary.getId());
+        responseDTO.setTotalSalary(salary.getTotalSalary());
+        responseDTO.setRemainingSalary(salary.getRemainingSalary());
+        responseDTO.setDate(salary.getDate());
+        responseDTO.setUserId(salary.getUser().getId());
+
+        return responseDTO;
     }
 
     @Override
@@ -94,7 +99,7 @@ public class SalaryServiceImpl implements SalaryService {
 
         User user = salary.getUser();
         if (user != null) {
-            user.setSalary(null);
+            user.setSalaries(null);
             userRepository.save(user);
         }
         salaryRepository.delete(salary);

@@ -43,10 +43,8 @@ public class TransactionServiceImpl implements TransactionService {
         User user = userRepository.findById(transactionRequestDTO.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + transactionRequestDTO.getUserId()));
 
-        Salary salary = user.getSalary();
-        if (salary == null) {
-            throw new IllegalStateException("Salary not found for User ID: " + transactionRequestDTO.getUserId());
-        }
+        Salary salary = salaryRepository.findById(transactionRequestDTO.getSalaryId())
+                .orElseThrow(() -> new RuntimeException("Salary not found with id: " + transactionRequestDTO.getSalaryId()));
 
         if (transactionRequestDTO.getAmount() > salary.getRemainingSalary()) {
             throw new IllegalArgumentException("Transaction amount exceeds the remaining salary.");

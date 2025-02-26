@@ -43,10 +43,8 @@ public class PiggyBankServiceImpl implements PiggyBankService {
         User user = userRepository.findById(piggyBankRequestDTO.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + piggyBankRequestDTO.getUserId()));
 
-        Salary salary = user.getSalary();
-        if (salary == null) {
-            throw new IllegalStateException("Salary not found for User ID: " + piggyBankRequestDTO.getUserId());
-        }
+        Salary salary = salaryRepository.findById(piggyBankRequestDTO.getSalaryId())
+                .orElseThrow(() -> new RuntimeException("Salary not found with id: " + piggyBankRequestDTO.getSalaryId()));
 
         if (salary.getRemainingSalary() < piggyBankRequestDTO.getAmount()) {
             throw new IllegalArgumentException("Insufficient remaining salary!");

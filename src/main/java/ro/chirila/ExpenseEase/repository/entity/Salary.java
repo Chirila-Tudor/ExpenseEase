@@ -27,7 +27,7 @@ public class Salary {
     @Column(nullable = false)
     private String date;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

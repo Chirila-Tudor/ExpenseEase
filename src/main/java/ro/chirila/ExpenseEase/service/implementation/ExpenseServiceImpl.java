@@ -46,10 +46,9 @@ public class ExpenseServiceImpl implements ExpenseService {
         User user = userRepository.findById(expenseRequestDTO.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + expenseRequestDTO.getUserId()));
 
-        Salary salary = user.getSalary();
-        if (salary == null) {
-            throw new IllegalStateException("Salary not found for User ID: " + expenseRequestDTO.getUserId());
-        }
+        Salary salary = salaryRepository.findById(expenseRequestDTO.getSalaryId())
+                .orElseThrow(() -> new RuntimeException("Salary not found with id: " + expenseRequestDTO.getSalaryId()));
+
         if (salary.getRemainingSalary() < expenseRequestDTO.getAmount()) {
             throw new IllegalArgumentException("Insufficient remaining salary!");
         }
