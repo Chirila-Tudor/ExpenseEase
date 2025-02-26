@@ -46,8 +46,4 @@ public class TransactionController {
     public TransactionResponseDTO getTransactionById(@RequestParam Long transactionId) {
         return transactionService.getTransactionById(transactionId);
     }
-    @GetMapping("/totalTransactions")
-    public double getTotalTransactionAmount() {
-        return transactionService.getTotalTransactionAmount();
-    }
 }

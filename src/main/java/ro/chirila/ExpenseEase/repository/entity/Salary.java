@@ -24,6 +24,9 @@ public class Salary {
     @Column(nullable = false)
     private Double remainingSalary;
 
+    @Column(nullable = false)
+    private String date;
+
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

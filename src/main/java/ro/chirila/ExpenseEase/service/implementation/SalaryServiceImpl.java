@@ -43,6 +43,7 @@ public class SalaryServiceImpl implements SalaryService {
         Salary salary = modelMapper.map(salaryRequestDTO, Salary.class);
         salary.setUser(user);
         salary.setRemainingSalary(salaryRequestDTO.getTotalSalary());
+        salary.setDate(salaryRequestDTO.getDate());
 
         Salary savedSalary = salaryRepository.save(salary);
 
@@ -75,6 +76,7 @@ public class SalaryServiceImpl implements SalaryService {
 
         existingSalary.setTotalSalary(salaryUpdateRequestDTO.getTotalSalary());
         existingSalary.setRemainingSalary(adjustedRemainingSalary);
+        existingSalary.setDate(salaryUpdateRequestDTO.getDate());
 
         Salary savedSalary = salaryRepository.save(existingSalary);
 

@@ -131,13 +131,4 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         expenseRepository.delete(expense);
     }
-
-    @Override
-    public double getTotalExpensesAmount() {
-        return expenseRepository.findAll().stream()
-                .mapToDouble(Expense::getAmount)
-                .sum();
-    }
-
-
 }

@@ -7,5 +7,6 @@ public class SalaryResponseDTO {
     private Long id;
     private Double totalSalary;
     private Double remainingSalary;
+    private String date;
     private Long userId;
 }

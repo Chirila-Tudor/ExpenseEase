@@ -16,6 +16,5 @@ public interface PiggyBankService {
     void deleteSaving(Long id);
     List<PiggyBankResponseDTO> getAllSavings();
     PiggyBankResponseDTO getSavingById(Long savingId);
-    double getTotalSavingsAmount();
 
 }

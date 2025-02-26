@@ -6,4 +6,5 @@ import lombok.Data;
 public class SalaryUpdateRequestDTO {
     private Long userId;
     private Double totalSalary;
+    private String date;
 }

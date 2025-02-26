@@ -126,10 +126,4 @@ public class PiggyBankServiceImpl implements PiggyBankService {
         return modelMapper.map(piggyBank, PiggyBankResponseDTO.class);
     }
 
-    @Override
-    public double getTotalSavingsAmount() {
-        return piggyBankRepository.findAll().stream()
-                .mapToDouble(PiggyBank::getAmount)
-                .sum();
-    }
 }

@@ -47,8 +47,4 @@ public class PiggyBankController {
     public PiggyBankResponseDTO getSavingById(@RequestParam Long savingId) {
         return piggyBankService.getSavingById(savingId);
     }
-    @GetMapping("/totalSavings")
-    public double getTotalSavingsAmount() {
-        return piggyBankService.getTotalSavingsAmount();
-    }
 }

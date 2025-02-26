@@ -47,9 +47,4 @@ public class ExpenseController {
     public double getTotalExpensesAmount() {
         return expenseService.getTotalExpensesAmount();
     }
-
-    @GetMapping("/getExpense")
-    public ExpenseResponseDTO getExpenseById(@RequestParam Long expenseId) {
-        return expenseService.getExpenseById(expenseId);
-    }
 }
