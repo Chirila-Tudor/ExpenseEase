@@ -43,4 +43,9 @@ public class ExpenseController {
         expenseService.deleteExpense(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/getExpense")
+    public ExpenseResponseDTO getExpenseById(@RequestParam Long expenseId) {
+        return expenseService.getExpenseById(expenseId);
+    }
 }
